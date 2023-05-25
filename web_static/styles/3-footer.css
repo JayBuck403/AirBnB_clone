@@ -1,13 +1,13 @@
 footer {
 	position: fixed;
 	bottom: 0;
-	background-color: white;
 	height: 60px;
 	width: 100%;
-	border-top: 1px #CCCCCC;
+	background-color: white;
+	border-top: 1px solid #CCCCCC;
 }
 
 footer p {
-	margin-bottom: auto;
 	text-align: center;
+	margin-bottom: auto;
 }
