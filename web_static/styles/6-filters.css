@@ -72,5 +72,9 @@ h4 {
 }
 
 .locations .popover ul {
-	margin-top: 1px;
+	position: relative;
+	top: -10px;
 }
+
+.amenities li {
+	padding: 10px 0;
