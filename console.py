@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """HBNB Command Interpreter"""
 import cmd
-from models import storage
+from engine.file_storage import FileStorage
 from models.base_model import BaseModel
 import re
 from shlex import split
@@ -42,7 +42,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
         else:
             print(eval(parse(line)[0]().id))
-            storage.save()
+            FileStorage.save()
 
     def do_show(self, line):
         """Print the string representation of an instance"""
@@ -52,10 +52,10 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
         elif len(parse(line)) == 1:
             print("** instance id missing **")
-        elif "{}.{}".format(parse(line)[0], parse(line)[1]) not in storage.all():
+        elif "{}.{}".format(parse(line)[0], parse(line)[1]) not in FileStorage.all():
             print("** no instance found **")
         else:
-            print(storage.all()["{}.{}".format(parse(line)[0], parse(line)[1])])
+            print(FileStorage.all()["{}.{}".format(parse(line)[0], parse(line)[1])])
 
     def do_destroy(self,line):
         """"""
@@ -65,11 +65,11 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
         elif len(parse(line)) == 1:
             print("** instance id missing **")
-        elif "{}.{}".format(parse(line)[0], parse(line)[1]) not in storage.all().keys():
+        elif "{}.{}".format(parse(line)[0], parse(line)[1]) not in FileStorage.all().keys():
             print("** no instance found **")
         else:
-            del storage.all()["{}.{}".format(parse(line)[0], parse(line)[1])]
-            storage.save()
+            del FileStorage.all()["{}.{}".format(parse(line)[0], parse(line)[1])]
+            FileStorage.save()
 
     def do_all(self, line):
         """Prints all string representation of all instances based on or not
@@ -78,8 +78,8 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
         else:
             my_ob = []
-            for ob in storage.all().values():
-                if len(parse(line)) > 0 parse(line)[0] == ob.__class__.__name__:
+            for ob in FileStorage.all().values():
+                if len(parse(line)) > 0 and parse(line)[0] == ob.__class__.__name__:
                     my_ob.append(ob.__str__())
                 elif len(parse(line)) == 0:
                     my_ob.append(ob.__str__())
@@ -96,7 +96,7 @@ class HBNBCommand(cmd.Cmd):
         if len(parse(line)) == 1:
             print("** instance id missing **")
             return False
-        if "{}.{}".format(parse(line)[0], parse(line)[1]) not in storage.all().keys():
+        if "{}.{}".format(parse(line)[0], parse(line)[1]) not in FileStorage.all().keys():
             print("** no instance found **")
             return False
         if len(parse(line)) == 2:
@@ -109,14 +109,14 @@ class HBNBCommand(cmd.Cmd):
                 print("** value missing **")
                 return False
         if len(parse(line)) == 4:
-            obj = storage.all()["{}.{}".format(parse(line)[0], parse(line)[1])]
+            obj = FileStorage.all()["{}.{}".format(parse(line)[0], parse(line)[1])]
             if parse(line)[2] in obj.__class__.__dict__.keys():
                 value_type = type(obj.__class__.__dict__[parse(line)[2]])
                 obj.__dict__[parse(line)[2]] = value_type(parse(line)[3])
             else:
                 obj.__dict__[parse(line)[2]] = parse(line)[3]
         elif type(eval(parse(line)[2])) == dict:
-            obj = storage.all()["{}.{}".format(parse(line)[0], parse(line)[1])]
+            obj = FileStorage.all()["{}.{}".format(parse(line)[0], parse(line)[1])]
             for k, v in eval(parse(line)[2]).items():
                 if (k in obj.__class__.__dict__.keys() and
                         type(obj.__class__.__dict__[k]) in {str, int, float}):
@@ -124,7 +124,7 @@ class HBNBCommand(cmd.Cmd):
                     obj.__dict__[k] = value_type(v)
                 else:
                     obj.__dict__[k] = v
-        storage.save()
+        FileStorage.save()
 
 
     def emptyline(self):
